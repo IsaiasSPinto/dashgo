@@ -1,7 +1,12 @@
 import { Flex, Icon, Input } from "@chakra-ui/react";
+import { useRef } from "react";
 import { RiSearchLine } from "react-icons/ri";
 
 export function SearchBox() {
+    const shearchInputRef = useRef<HTMLInputElement>(null);
+
+    console.log(shearchInputRef.current?.value);
+
     return (
         <Flex
             as="label"
@@ -21,6 +26,7 @@ export function SearchBox() {
                 variant="unstyled"
                 placeholder="Buscar na plataforma"
                 _placeholder={{ color: 'gray.400' }}
+                ref={shearchInputRef}
             />
 
             <Icon as={RiSearchLine}></Icon>

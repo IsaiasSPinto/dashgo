@@ -1,26 +1,37 @@
-import { Button, Flex, Stack } from '@chakra-ui/react'
+import { Button, Flex, Stack ,Text} from '@chakra-ui/react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { Input } from '../components/Form/Input'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 
 type SignInFormData = {
   email: string,
   password: string
 }
 
+const signInFormSchema = yup.object().shape({
+  email: yup.string().email("Email invalido").required("Email Obrigatório"),
+  password: yup.string().required("Senha Obrigatória")
+})
+
+
 export default function SignIn() {
-  const { handleSubmit, register , formState} = useForm();
+  const { handleSubmit, register , formState} = useForm({
+    resolver: yupResolver(signInFormSchema)
+  });
 
   const handleSignIn : SubmitHandler<SignInFormData> = async (values) => {
     await new Promise(resolve => setTimeout(resolve, 2000));
     console.log(values);
   }
 
+  const {errors} = formState;
   return (
     <Flex
       w="100vw"
       h="100vh"
       align="center"
-      justify="center"
+      justify="center" 
     >
       <Flex
         as="form"
@@ -36,14 +47,24 @@ export default function SignIn() {
           <Input 
             label="E-mail" 
             type="email" 
-            error={formState.errors.email}
             {...register("email", { required: 'E-mail obrigatório' })}
           />
+              {errors.email && (
+            <Text as="i" color="red.500">
+              {String(errors.email.message)}
+            </Text>
+          )}
           <Input 
             label="Senha" 
-            type="password" 
+            type="password"
             {...register("password", { required: 'Senha obrigatória' })}
           />
+           {errors.password && (
+            <Text as="i" color="red.500">
+              {String(errors.password.message)}
+            </Text>
+          )}
+
         </Stack>
 
         <Button type="submit" mt="6" colorScheme="pink" size="lg" isLoading={formState.isSubmitting}>Entrar</Button>
